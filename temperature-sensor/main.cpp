@@ -16,6 +16,7 @@ int thermistor_pin = A0;
 // Variables
 int thermistor_voltage;
 int stored_voltage;
+int iteration = 0;
 
 double voltage_to_temp(int v, bool f=false) {
   // Converts voltage from thermistor reading to temperature
@@ -47,20 +48,23 @@ void setup() {
 }
 
 void loop() {
-  // Output thermistor data
-  thermistor_voltage = analogRead(thermistor_pin);
+  if (iteration < 1000) {
+    // Output thermistor data
+    thermistor_voltage = analogRead(thermistor_pin);
 
-  // Save thermistor temp data to EEPROM
-  EEPROM.update(0, map(thermistor_voltage, 0, 1023, 0, 255));  // Originally write but update is more efficient
+    // Save thermistor temp data to EEPROM
+    EEPROM.update(iteration, map(thermistor_voltage, 0, 1023, 0, 255));  // Originally write but update is more efficient
+    iteration += 1;
 
-  // Print thermistor to lcd
-  lcd.setCursor(0, 0);
-  lcd.print("Temp " + String(voltage_to_temp(thermistor_voltage)) + " C");
+    // Print thermistor to lcd
+    lcd.setCursor(0, 0);
+    lcd.print("Temp " + String(voltage_to_temp(thermistor_voltage)) + " C");
 
-  // Output DHT sensor data
-  lcd.setCursor(0, 1);
-  lcd.print(String(dht.readTemperature()) + " C, " + String(dht.readHumidity()) + " %");
+    // Output DHT sensor data
+    lcd.setCursor(0, 1);
+    lcd.print(String(dht.readTemperature()) + " C, " + String(dht.readHumidity()) + " %");
 
-  // Sample temperature about 1 time per minute
-  delay(60000);
+    // Sample temperature about 1 time per minute
+    delay(60000);
+  }
 }
