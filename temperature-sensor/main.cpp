@@ -65,6 +65,6 @@ void loop() {
     lcd.print(String(dht.readTemperature()) + " C, " + String(dht.readHumidity()) + " %");
 
     // Sample temperature about 1 time per minute
-    delay(60000);
+    // delay(60000);
   }
 }
